@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Crime</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style type="text/css">
+      /* Legend Font Style */
+      body {
+        font: 11px sans-serif;
+        background-color: #add8e6;
+        width:1920;
+        height:1024px;
+         position:absolute;
+      }
+      
+      .h1 {
+        margin-bottom: 10px;
+      }
+
+      /* Legend Position Style */
+      .chart {
+       
+        display: block;
+        margin-left: 35px;
+        margin-top: -745px;
+      }
+      .y{
+        font-size: 20px;
+      }
+      .pie{
+        display: block;
+        margin-left: -300px;
+        margin-top: -10px;
+      }
+      .arc{
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .yaxis{
+        font-weight: bold;
+        font-size: 12px;
+      }
+      .xaxis{
+        font-weight: bold;
+        font-size: 12px;
+      }
+
+      .axis text {
+        font: 10px sans-serif;
+      }
+     
+      .axis line,
+      .axis path {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+      .filter{
+        position: absolute;
+        left: 5px;
+        top:100px;
+        width:200px;
+        height:100px;
+        font-size: large;
+        background-color: #add8e6;
+        font-weight: bold;
+
+
+      }
+      #tooltip{
+		font-size:20px;
+    font-weight: bold;
+    color: black;
+
+	
+
+}
+      svg {
+  display: block;
+  margin-left: 700px;
+  margin-top: 40px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="w3-top">
+      <div class="w3-bar w3-border w3-white w3-large">
+          <a href="index.html" class="w3-bar-item w3-button w3-padding-16">About</a>
+          <a href="crime.html" class="w3-bar-item w3-button w3-padding-16">Crime</a>
+          <a href="shooting.html" class="w3-bar-item w3-button w3-padding-16">School Shooting</a>
+          <a href="police.html" class="w3-bar-item w3-button w3-padding-16">Police victims</a>
+        </div>
+        </div>
+   
+    <h1>
+      <br></br>
+      Crime statistic for 2018
+      <br></br>
+
+
+      Clicking on state will create barchart and piechart
+    </h1>
+   
+
+    <script>
+      //Width and height of map
+      var width = 1300;
+      var height = 800;
+      var selection = "Black";
+      var lowColor = "#FFD1D1";
+      var highColor = "#FC0000";
+      var minVal;
+      var minVal
+      var dataArray=[];
+   
+      var tooltip = d3
+        .select("body")
+        .append("div")
+        .attr("id", "tooltip")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("opacity",0)
+        .style("border-color","black")
+        .style("background-color","#add8e6")
+        .style( "border-radius", "10")
+        .style("border-width","3")
+        .style("border-height","10")
+        .style("visibility", "hidden")
+        
+      // D3 Projection
+      var projection = d3
+        .geo.albersUsa()
+        .translate([width / 2, height / 2]) // translate to center of screen
+        .scale([1800]); // scale things down so see entire US
+
+      // Define path generator
+      var path = d3
+        .geo.path() // path generator that will convert GeoJSON to SVG paths
+        .projection(projection); // tell path generator to use albersUsa projection
+        
+
+      d3.select("body").insert("h2", ":first-child");
+      //Create SVG element and append map to the SVG
+      var svg = d3
+        .select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("align","center")
+
+     
+
+
+      // Load in my states data!
+
+      d3.csv("data/crime.csv")
+        .row(function (d) {
+          return {
+            state: d.State,
+            ag:d.totalAggrevatedAssault,
+            robberies:d.totalrobberies,
+            murders:d.totalMurders,
+            robberyFirearms:d.robberyFirearms,
+            robberyKnives:d.robberyKnives,
+            roberyOtherWeapons:d.roberyOtherWeapons,
+            murderHandguns:d.murderHandguns,
+            murderRfiles:d.murderRfiles,
+            murderShotgun:d.murderShotgun,
+            murderKnives:d.murderKnives
+};
+        })
+
+        .get(function (error, data) {
+             dataArray = [];
+	for (var d = 0; d < data.length; d++) {
+		dataArray.push(data[d].ag)
+	}
+	 minVal = d3.min(dataArray)
+	 maxVal = d3.max(dataArray)
+	var ramp = d3.scale.linear().domain([minVal,maxVal]).range([lowColor,highColor])
+	
+  // Load GeoJSON data and merge with states data
+  d3.json("data/us-states.json", function(json) {
+
+    // Loop through each state data value in the .csv file
+    for (var i = 0; i < data.length; i++) {
+
+      // Grab State Name
+      var dataState = data[i].state;
+
+      // Grab data value 
+      var dataValue = data[i].ag;
+      var dataValue1=data[i].murders;
+      var dataValue2=data[i].robberies;
+      var dataValue3=data[i].roberyOtherWeapons;
+      var dataValue4=data[i].robberyKnives;
+      var dataValue5=data[i].robberyFirearms;
+      var dataValue6=data[i].murderHandguns;
+      var dataValue7=data[i].murderShotgun;
+      var dataValue8=data[i].murderKnives;
+      var dataValue9=data[i].murderRfiles;
+
+
+
+
+      // Find the corresponding state inside the GeoJSON
+      for (var j = 0; j < json.features.length; j++) {
+        var jsonState = json.features[j].properties.name;
+
+        if (dataState == jsonState) {
+
+          // Copy the data value into the JSON
+          json.features[j].properties.ag = dataValue;
+          json.features[j].properties.murders = dataValue1;
+          json.features[j].properties.robberies = dataValue2;
+          json.features[j].properties.roberyOtherWeapons = dataValue3;
+          json.features[j].properties.robberyKnives = dataValue4;
+          json.features[j].properties.robberyFirearms = dataValue5;
+          json.features[j].properties.murderHandguns = dataValue6;
+          json.features[j].properties.murderShotgun = dataValue7;
+          json.features[j].properties.murderKnives = dataValue8;
+          json.features[j].properties.murderRfiles = dataValue9;
+
+
+
+
+
+
+          // Stop looking through the JSON
+          break;
+        }
+      }
+    }
+
+    // Bind the data to the SVG and create one path per GeoJSON feature
+    svg.selectAll("path")
+      .data(json.features)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      .style("stroke", "#fff")
+      .style("stroke-width", "1")
+      .style("fill-opacity", 0.55)
+      .on("mouseover", function (d) {
+              d3.select(this).style("fill-opacity", 0.88)
+
+              return tooltip.style("visibility", "visible").style("opacity", .9).html("State: "+d.properties.name +"<br/>"+" Murders: "+d.properties.murders+
+              "<br/>"+"Robberies: "+d.properties.robberies+"<br/>"+ "Aggrevated Assaults: "+d.properties.ag
+              )
+          
+        })
+        .on("mousemove", function () {
+           
+           return tooltip
+             .style("top", event.pageY - 10 + "px")
+             .style("left", event.pageX + 10 + "px");
+         })
+    .on("mouseout", function () {
+            d3.select(this).style("fill-opacity", function (d) {
+              return 0.55;
+            })
+            return tooltip.style("visibility", "hidden");
+          })
+      .on("mousedown", function (d) {
+          d3.selectAll(".chart").remove();
+          d3.selectAll(".pie").remove();
+
+          chart(d.properties.robberies,d.properties.robberyFirearms,d.properties.robberyKnives,d.properties.roberyOtherWeapons)
+          pie(d.properties.murderHandguns,d.properties.murderRfiles,d.properties.murderShotgun,d.properties.murderKnives)
+
+          
+
+
+
+          })
+
+         
+
+        });
+    })
+    
+ function chart(total,firearm,knives,other){
+
+ // Setup svg using Bostock's margin convention
+var data=[firearm,knives,other]
+
+//var data = [1, 2, 3 , 4, 5, 6, 7, 8, 9, 10];
+var margin = {top: 20, bottom: 70, left:40, right: 20};
+var width = 600 - margin.left - margin.right;
+var height = 600 - margin.top - margin.bottom;
+var barPadding = 4;
+var barWidth = width / data.length - barPadding;
+
+var color = d3.scale.category10();
+      color.domain(data);
+
+
+var x = d3.scale.ordinal()
+.domain(d3.range(data.length))
+.rangeRoundBands([0, width]);
+var y = d3.scale.linear()
+.domain([0, d3.max(data)])
+.range([height, 0]);
+
+
+
+var svg = d3.select("body")
+.append("svg")
+.attr("width", width + margin.left + margin.right)
+.attr("height", height + margin.bottom + margin.top)
+.style("background-color", "lightblue")
+.attr("class","chart")
+.append("g")
+.attr("transform", "translate(" + margin.left + "," + margin.top +")")
+
+svg.append("text")
+       .attr("transform", "translate(100,0)")
+       .attr("x", 100)
+       .attr("y", -2)
+       .attr("font-size", "24px")
+       .attr("font-weight","bold")
+       .text("Weapons used in robbery")
+
+var xAxis = d3.svg.axis()
+.scale(x)
+.orient("bottom")
+.tickFormat(function(d,i) { if(i==0){return "Firearm"} else if(i==1){return "Knives"}else{
+  return "Other"
+}
+
+});
+
+var yAxis = d3.svg.axis()
+.scale(y)
+.orient("left")
+.ticks(10);
+svg.append("g")
+.attr("class", "xaxis")
+.attr("transform", "translate(0," + height + ")")
+.call(xAxis)
+.selectAll("text")
+.style("text-anchor", "middle");
+svg.append("g")
+.attr("class", "yaxis")
+.call(yAxis)
+.append("text")
+.attr("transform", "rotate(-90)")
+.attr("y", 6)
+.attr("dy", ".71em")
+.style("text-anchor", "end")
+
+
+
+var barchart = svg.selectAll("rect")
+.data(data)
+.enter()
+.append("rect")
+.style("fill",function(d,i){
+  if(i==0){
+    return "#32CD32"
+  }else if(i==1){
+    return "#d54b20"
+  }
+})
+
+.attr("x", function(d, i) { return x(i); })
+
+.attr("y", y) .attr("height", function(d) { return height - y(d); })
+
+.attr("y",  d => { return height; })
+            .attr("height", 0)
+                .transition()
+                .duration(750)
+                .delay(function (d, i) {
+                    return i * 150;
+                })
+        .attr("y",  d => { return y(d); })
+        .attr("height",  d => { return height - y(d); })
+
+.attr("width", barWidth)
+.attr("fill", "blue")
+.attr("class","chart")
+
+ }
+ 
+ function pie(handgun,rifle,shotgun,knives){
+   total=handgun+rifle+shotgun+knives;
+   otherFireArm=rifle+shotgun;
+  var dataset = [
+	{ name: 'Handgun', total: handgun, percent: (handgun/total)*100},
+	{ name: 'Knives ', total: knives, percent: (knives/total)*100 },
+	{ name: 'Rifles', total: rifle, percent: (rifle/total)*100 },
+  { name: 'Shotgun', total: rifle, percent: (shotgun/total)*100 }
+
+];
+
+			
+var width = 1200,
+    height = 500,
+    radius = Math.min(width, height) / 2;
+
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"]);
+
+var arc = d3.svg.arc()
+    .outerRadius(radius - 10)
+    .innerRadius(radius - 70);
+    var getAngle = function (d) {
+    return (180 / Math.PI * (d.startAngle + d.endAngle) / 2 - 90);
+};
+
+
+var pie = d3.layout.pie()
+    .sort(null)
+	 .startAngle(1.1*Math.PI)
+    .endAngle(3.1*Math.PI)
+    .value(function(d) { return d.total; });
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("class", "pie")
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+
+
+    svg.append("text")
+       .attr("transform", "translate(100,0)")
+       .attr("x", 150)
+       .attr("y", -2)
+       .attr("font-size", "24px")
+       .attr("font-weight","bold")
+       .text("Weapons used in murdering")
+
+ var g = svg.selectAll(".arc")
+      .data(pie(dataset))
+    .enter().append("g")
+      .attr("class", "arc");
+
+  g.append("path")
+	.style("fill", function(d) { return color(d.data.name); })
+    .transition().delay(function(d,i) {
+	return i * 500; }).duration(500)
+	.attrTween('d', function(d) {
+		var i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+		return function(t) {
+			d.endAngle = i(t); 
+			return arc(d)
+			}
+		}); 
+ 
+	  
+//d3.select("body").transition().style("background-color", "#d3d3d3");
+function type(d) {
+  d.total = +d.total;
+  return d;
+}
+var legendRectSize = 13;
+var legendSpacing = 7;
+
+var legend = svg.selectAll('.legend') //the legend and placement
+.data(color.domain())
+.enter()
+.append('g')
+.attr('class', 'circle-legend')
+.attr('transform', function (d, i) {
+     var height = legendRectSize + legendSpacing;
+     var offset = height * color.domain().length / 2;
+     var horz = -2 * legendRectSize - 13;
+     var vert = i * height - offset;
+     return 'translate(' + horz + ',' + vert + ')';
+});
+legend.append('circle') //keys
+.style('fill', color)
+.style('stroke', color)
+.attr('cx', 0)
+.attr('cy', 0)
+.attr('r', '.5rem');
+legend.append('text') //labels
+.attr('x', legendRectSize + legendSpacing)
+.attr('y', legendRectSize - legendSpacing)
+.text(function (d) {
+     return d;
+})
+.style("font-size","20px")
+.style("font-weight","bold")
+
+
+ }
+    </script>
+
+
+  </body>
+</html>
+           

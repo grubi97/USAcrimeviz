@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Police</title>
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
+    <style type="text/css">
+      /* Legend Font Style */
+      body {
+        font: 11px sans-serif;
+        background-color: #add8e6;
+        width:1920;
+        height:1024px;
+         position:absolute;
+      }
+      
+      .h1 {
+        margin-bottom: 10px;
+      }
+      #tooltip{
+		font-size:20px;
+    font-weight: bold;
+    color: black;
+
+	
+
+}
+
+      /* Legend Position Style */
+      .legend {
+       
+        display: block;
+        margin-left: 30px;
+        margin-top: -745px;
+      }
+      .yaxis{
+        font-weight: bold;
+        font-size: 15px;
+      }
+
+      .axis text {
+        font: 10px sans-serif;
+      }
+
+      .axis line,
+      .axis path {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+      .filter{
+        position: absolute;
+        left: 5px;
+        top:250px;
+        width:200px;
+        height:100px;
+        font-size: large;
+        background-color: #add8e6;
+        font-weight: bold;
+
+
+      }
+      svg {
+  display: block;
+  margin-left: 700px;
+  margin-top: 50px;
+}
+
+div.tooltip{
+   
+    border-color: black;
+    border-radius: 10;
+    border-width: 3;
+  
+}
+  </style>
+  </head>
+  <body>
+    <div class="w3-top">
+      <div class="w3-bar w3-border w3-white w3-large">
+          <a href="index.html" class="w3-bar-item w3-button w3-padding-16">About</a>
+          <a href="crime.html" class="w3-bar-item w3-button w3-padding-16">Crime</a>
+          <a href="shooting.html" class="w3-bar-item w3-button w3-padding-16">School Shooting</a>
+          <a href="police.html" class="w3-bar-item w3-button w3-padding-16">Police victims</a>
+        </div>
+        </div>
+    <h1>
+      <br></br>
+
+      Total number of People killed by Police 2013-2019 by race in each State
+      <br></br>
+      BLACK LIVES MATTER
+    </h1>
+
+    <script>
+      //Width and height of map
+      var width = 1300;
+      var height = 800;
+      var selection = "Black";
+      var lowColor = "#FFD1D1";
+      var highColor = "#FC0000";
+      let dataArray = [];
+      let minVal;
+      let maxVal;
+
+      var tooltip = d3
+        .select("body")
+        .append("div")
+        .attr("id", "tooltip")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("opacity",0)
+        .style("border-color","black")
+        .style("background-color","#add8e6")
+        .style( "border-radius", "10")
+        .style("border-width","3")
+        .style("border-height","10")
+        .style("visibility", "hidden")
+        
+
+      // D3 Projection
+      var projection = d3
+        .geoAlbersUsa()
+        .translate([width / 2, height / 2]) // translate to center of screen
+        .scale([1650]); // scale things down so see entire US
+
+      // Define path generator
+      var path = d3
+        .geoPath() // path generator that will convert GeoJSON to SVG paths
+        .projection(projection); // tell path generator to use albersUsa projection
+
+      d3.select("body").insert("h2", ":first-child");
+      //Create SVG element and append map to the SVG
+      var svg = d3
+        .select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("align","center")
+
+     
+
+
+      // Load in my states data!
+
+      d3.csv("data/policekills.csv")
+        .row(function (d) {
+          return {
+            state: d.State,
+            native: d.NativeAmericanpeoplekilled,
+            black: d.Blackpeoplekilled,
+            white: d.Whitepeoplekilled,
+            hispanic:d.Hispanicpeoplekilled,
+            asian:d.Asianpeoplekilled,
+            pacific:d.Pacificislanderskilled,
+            unknown:d.UnknownRacepeoplekilled,
+            total:d.PeopleKilled
+
+          };
+        })
+
+        .get(function (error, data) {
+          let newAr = [];
+
+          data.forEach((element) => {
+            newAr.push({ state: element.state, el: element.black });
+          });
+
+          select(newAr);
+          d3.select("#filter").on("change", function () {
+            newAr = [];
+            d3.selectAll("path").remove();
+            d3.selectAll(".legend").remove();
+
+           
+
+            var section = document.getElementById("filter");
+            selection = section.options[section.selectedIndex].value;
+            switch (selection) {
+              case "Black":
+                data.forEach((element) => {
+                  newAr.push({ state: element.state, el: element.black });
+                });
+
+
+                select(newAr);
+
+                break;
+              case "Native":
+                data.forEach((element) => {
+                  newAr.push({ state: element.state, el: element.native });
+                });
+
+                select(newAr);
+
+
+                break;
+              case "White":
+                data.forEach((element) => {
+                  newAr.push({ state: element.state, el: element.white });
+                });
+                select(newAr);
+
+
+                break;
+
+                case "Hispanic":
+                data.forEach((element) => {
+                  newAr.push({ state: element.state, el: element.hispanic });
+                });
+                select(newAr);
+                
+
+                break; 
+
+                
+                case "Asian":
+                data.forEach((element) => {
+                  newAr.push({ state: element.state, el: element.asian });
+                });
+                select(newAr);
+                
+
+                break; 
+                case "Pacific":
+                data.forEach((element) => {
+                  newAr.push({ state: element.state, el: element.pacific });
+                });
+                select(newAr);
+                
+
+                break; 
+
+                case "Unknown":
+                data.forEach((element) => {
+                  newAr.push({ state: element.state, el: element.unknown });
+                });
+                select(newAr);
+                
+
+                break; 
+                case "Total":
+                data.forEach((element) => {
+                  newAr.push({ state: element.state, el: element.total });
+                });
+                select(newAr);
+                
+
+                break; 
+            }
+          });
+
+          // add a legend
+        });
+      function select(data) {
+        dataArray = [];
+
+        for (var d = 0; d < data.length; d++) {
+          if (data[d].el != "") {
+            dataArray.push(parseFloat(data[d].el));
+          }
+        }
+        console.log(dataArray);
+
+        minVal = Math.min.apply(Math, dataArray);
+        maxVal = Math.max.apply(Math, dataArray);
+        var ramp = d3
+          .scaleLinear()
+          .domain([minVal, maxVal])
+          .range([lowColor, highColor]);
+
+        d3.json("data/us-states.json", function (json) {
+          for (var i = 0; i < data.length; i++) {
+            var dataState = data[i].state;
+
+            var dataValue = data[i].el;
+
+            for (var j = 0; j < json.features.length; j++) {
+              var jsonState = json.features[j].properties.name;
+
+              if (dataState == jsonState) {
+                json.features[j].properties.el = dataValue;
+
+                break;
+              }
+            }
+          }
+
+          svg
+            .selectAll("path")
+            .data(json.features)
+            .enter()
+            .append("path")
+            .attr("d", path)
+            .style("stroke", "#fff")
+            .style("stroke-width", "1")
+            .style("fill", function (d) {
+              return ramp(d.properties.el);
+            })
+           
+           
+            .on("mouseover", function (d) {
+              d3.select(this).style("fill", "grey")
+          
+            return tooltip.style("visibility", "visible").style("opacity", .9).html("State: "+d.properties.name +"<br/>"+" Victims: "+d.properties.el)
+          })
+          .on("mousemove", function () {
+           
+            return tooltip
+              .style("top", event.pageY - 10 + "px")
+              .style("left", event.pageX + 10 + "px");
+          })
+          .on("mouseout", function () {
+            d3.select(this).style("fill", function (d) {
+              return ramp(d.properties.el);
+            })
+            return tooltip.style("visibility", "hidden");
+          });
+        });
+
+       
+legend()
+      }
+
+  function legend(){
+    var w = 140,
+          h = 700;
+
+        var key = d3
+          .select("body")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", h)
+          .attr("class", "legend");
+
+        var legend = key
+          .append("defs")
+          .append("svg:linearGradient")
+          .attr("id", "gradient")
+          .attr("x1", "100%")
+          .attr("y1", "0%")
+          .attr("x2", "100%")
+          .attr("y2", "100%")
+          .attr("spreadMethod", "pad");
+
+        legend
+          .append("stop")
+          .attr("offset", "0%")
+          .attr("stop-color", highColor)
+          .attr("stop-opacity", 1);
+
+        legend
+          .append("stop")
+          .attr("offset", "100%")
+          .attr("stop-color", lowColor)
+          .attr("stop-opacity", 1);
+
+        key
+          .append("rect")
+          .attr("width", w - 100)
+          .attr("height", h)
+          .style("fill", "url(#gradient)")
+          .attr("transform", "translate(0,10)");
+
+        var y = d3.scaleLinear().range([h, 0]).domain([minVal, maxVal]);
+
+        var yAxis = d3.axisRight(y);
+
+        key
+          .append("g")
+          .attr("class", "yaxis")
+          .attr("transform", "translate(41,10)")
+          .call(yAxis);
+  }
+
+ 
+    </script>
+
+    <select id="filter" class="filter">
+      <option value="Black">African American</option>
+      <option value="Native">Native American</option>
+      <option value="White">White People</option>
+      <option value="Asian">Asian American</option>
+      <option value="Hispanic">Hispanics</option>
+      <option value="Pacific">Pacific Islanders</option>
+      <option value="Unknown">Unknown</option>
+      <option value="Total">Total</option>
+
+    </select>
+  </body>
+</html>
+           
