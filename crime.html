@@ -6,85 +6,10 @@
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="https://unpkg.com/d3-simple-slider"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <style type="text/css">
-      /* Legend Font Style */
-      body {
-        font: 11px sans-serif;
-        background-color: #add8e6;
-        width:1920;
-        height:1024px;
-         position:absolute;
-      }
-      
-      .h1 {
-        margin-bottom: 10px;
-      }
-
-      /* Legend Position Style */
-      .chart {
-       
-        display: block;
-        margin-left: 35px;
-        margin-top: -745px;
-      }
-      .y{
-        font-size: 20px;
-      }
-      .pie{
-        display: block;
-        margin-left: -300px;
-        margin-top: -10px;
-      }
-      .arc{
-        font-size: 20px;
-        font-weight: bold;
-      }
-      .yaxis{
-        font-weight: bold;
-        font-size: 12px;
-      }
-      .xaxis{
-        font-weight: bold;
-        font-size: 12px;
-      }
-
-      .axis text {
-        font: 10px sans-serif;
-      }
-     
-      .axis line,
-      .axis path {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-      }
-      .filter{
-        position: absolute;
-        left: 5px;
-        top:100px;
-        width:200px;
-        height:100px;
-        font-size: large;
-        background-color: #add8e6;
-        font-weight: bold;
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" type="text/css" href="styles/crime.css">
 
 
-      }
-      #tooltip{
-		font-size:20px;
-    font-weight: bold;
-    color: black;
-
-	
-
-}
-      svg {
-  display: block;
-  margin-left: 700px;
-  margin-top: 40px;
-}
-    </style>
   </head>
   <body>
     <div class="w3-top">
@@ -108,7 +33,7 @@
 
     <script>
       //Width and height of map
-      var width = 1300;
+      var width = 1000;
       var height = 800;
       var selection = "Black";
       var lowColor = "#FFD1D1";
@@ -135,7 +60,7 @@
       var projection = d3
         .geo.albersUsa()
         .translate([width / 2, height / 2]) // translate to center of screen
-        .scale([1800]); // scale things down so see entire US
+        .scale([1200]); // scale things down so see entire US
 
       // Define path generator
       var path = d3
@@ -285,13 +210,11 @@
     
  function chart(total,firearm,knives,other){
 
- // Setup svg using Bostock's margin convention
 var data=[firearm,knives,other]
 
-//var data = [1, 2, 3 , 4, 5, 6, 7, 8, 9, 10];
-var margin = {top: 20, bottom: 70, left:40, right: 20};
-var width = 600 - margin.left - margin.right;
-var height = 600 - margin.top - margin.bottom;
+var margin = {top: 20, bottom: 70, left:35, right: 10};
+var width = 320 - margin.left - margin.right;
+var height = 400 - margin.top - margin.bottom;
 var barPadding = 4;
 var barWidth = width / data.length - barPadding;
 
@@ -319,11 +242,12 @@ var svg = d3.select("body")
 
 svg.append("text")
        .attr("transform", "translate(100,0)")
-       .attr("x", 100)
-       .attr("y", -2)
-       .attr("font-size", "24px")
+       .attr("x", 45)
+       .attr("y", -5)
+       .attr("class", "title")
+       .attr("font-size", "15px")
        .attr("font-weight","bold")
-       .text("Weapons used in robbery")
+       .text("Robbery weapons")
 
 var xAxis = d3.svg.axis()
 .scale(x)
@@ -388,19 +312,22 @@ var barchart = svg.selectAll("rect")
  }
  
  function pie(handgun,rifle,shotgun,knives){
-   total=handgun+rifle+shotgun+knives;
-   otherFireArm=rifle+shotgun;
+   total=parseFloat(handgun)+parseFloat(rifle)+parseFloat(shotgun)+parseFloat(knives);
+   handgunper=(parseFloat(handgun)/total)*100
+   shotgunper=(parseFloat(shotgun)/total)*100
+   knivesper=(parseFloat(knives)/total)*100
+   rifleper=(parseFloat(rifle)/total)*100
   var dataset = [
-	{ name: 'Handgun', total: handgun, percent: (handgun/total)*100},
-	{ name: 'Knives ', total: knives, percent: (knives/total)*100 },
-	{ name: 'Rifles', total: rifle, percent: (rifle/total)*100 },
-  { name: 'Shotgun', total: rifle, percent: (shotgun/total)*100 }
+	{ name: 'Handgun', total: handgun, percent: handgunper},
+	{ name: 'Knives', total: knives, percent: knivesper },
+	{ name: 'Rifles', total: rifle, percent: rifleper},
+  { name: 'Shotgun', total: rifle, percent: shotgunper}
 
 ];
 
 			
-var width = 1200,
-    height = 500,
+var width = 1000,
+    height = 400,
     radius = Math.min(width, height) / 2;
 
 var color = d3.scale.ordinal()
@@ -430,11 +357,11 @@ var svg = d3.select("body").append("svg")
 
     svg.append("text")
        .attr("transform", "translate(100,0)")
-       .attr("x", 150)
-       .attr("y", -2)
+       .attr("x", 50)
+       .attr("y", 150)
        .attr("font-size", "24px")
        .attr("font-weight","bold")
-       .text("Weapons used in murdering")
+       .text("Murder weapons")
 
  var g = svg.selectAll(".arc")
       .data(pie(dataset))
@@ -454,7 +381,6 @@ var svg = d3.select("body").append("svg")
 		}); 
  
 	  
-//d3.select("body").transition().style("background-color", "#d3d3d3");
 function type(d) {
   d.total = +d.total;
   return d;
@@ -486,7 +412,7 @@ legend.append('text') //labels
 .text(function (d) {
      return d;
 })
-.style("font-size","20px")
+.style("font-size","15px")
 .style("font-weight","bold")
 
 

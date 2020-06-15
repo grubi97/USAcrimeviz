@@ -7,73 +7,10 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://unpkg.com/d3-simple-slider"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
-    <style type="text/css">
-      /* Legend Font Style */
-      /* Legend Font Style */
-      body {
-        font: 11px sans-serif;
-        background-color: #add8e6;
-        width: 1920;
-        height: 1024px;
-        position: absolute;
-      }
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
+    <link rel="stylesheet" type="text/css" href="styles/shooting.css">
 
-      .h1 {
-        margin-bottom: 10px;
-      }
 
-      /* Legend Position Style */
-      .legend {
-        display: block;
-        margin-left: 30px;
-        margin-top: -745px;
-      }
-      .yaxis {
-        font-weight: bold;
-        font-size: 15px;
-      }
-      span {
-        font-size: 30px;
-        font-weight: bold;
-      }
-
-      .axis text {
-        font: 10px sans-serif;
-      }
-
-      .axis line,
-      .axis path {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-      }
-      .slider {
-        position: absolute;
-        left: 5px;
-        top: 200px;
-        width: 200px;
-        height: 100px;
-        background-color: #add8e6;
-      }
-      svg {
-        display: block;
-        margin-left: 700px;
-        margin-top: 50px;
-      }
-      #tooltip{
-		font-size:20px;
-    font-weight: bold;
-    color: black;
-
-	
-
-}
-path:hover{
-  color: aliceblue;
-  fill: aliceblue;
-}
-    </style>
   </head>
   <body>
     <div class="w3-top">
@@ -108,11 +45,14 @@ path:hover{
     </p>
  
 
+    <div id=container></div>
+
     
 
     <script>
-      //Width and height of map
-      var width = 1300;
+
+
+      var width = 1000;
       var height = 800;
 
       var lowColor = "#f9f9f9";
@@ -136,7 +76,7 @@ path:hover{
       var projection = d3
         .geoAlbersUsa()
         .translate([width / 2, height / 2]) // translate to center of screen
-        .scale([1650]); // scale things down so see entire US
+        .scale([1200]); // scale things down so see entire US
 
       // Define path generator
       var path = d3
@@ -146,10 +86,10 @@ path:hover{
       d3.select("body").insert("h2", ":first-child");
       //Create SVG element and append map to the SVG
       var svg = d3
-        .select("body")
+        .select("#container")
         .append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
 
       // Load in my states data!
 
@@ -213,7 +153,7 @@ path:hover{
                 })
                 .on("mouseout", function () {
                   d3.select(this).style("fill", function (d) {
-              return ramp(d.properties.el);
+              return ramp(d.properties.wounded);
             })
                   return tooltip.style("visibility", "hidden");
                 });
@@ -275,7 +215,7 @@ path:hover{
                 })
                 .on("mouseout", function () {
                   d3.select(this).style("fill", function (d) {
-              return ramp(d.properties.el);
+              return ramp(d.properties.wounded);
             })
                   return tooltip.style("visibility", "hidden");
                 });

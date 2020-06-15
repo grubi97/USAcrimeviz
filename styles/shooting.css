@@ -1,0 +1,62 @@
+      body {
+        font: 11px sans-serif;
+        background-color: #add8e6;
+        width: 1920;
+        height: 1024px;
+        position: absolute;
+      }
+
+      .h1 {
+        margin-bottom: 10px;
+      }
+
+      /* Legend Position Style */
+      .legend {
+        display: block;
+        margin-left: 30px;
+        margin-top: -745px;
+      }
+      .yaxis {
+        font-weight: bold;
+        font-size: 15px;
+      }
+      span {
+        font-size: 30px;
+        font-weight: bold;
+      }
+
+      .axis text {
+        font: 10px sans-serif;
+      }
+
+      .axis line,
+      .axis path {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+      .slider {
+        position: absolute;
+        left: 5px;
+        top: 200px;
+        width: 200px;
+        height: 100px;
+        background-color: #add8e6;
+      }
+      svg {
+        display: block;
+        margin-left: 310px;
+        margin-top: 50px;
+      }
+      #tooltip{
+		font-size:20px;
+    font-weight: bold;
+    color: black;
+
+	
+
+}
+path:hover{
+  color: aliceblue;
+  fill: aliceblue;
+}

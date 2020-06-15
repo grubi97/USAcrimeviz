@@ -8,76 +8,9 @@
     <script src="https://unpkg.com/d3-simple-slider"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
-    <style type="text/css">
-      /* Legend Font Style */
-      body {
-        font: 11px sans-serif;
-        background-color: #add8e6;
-        width:1920;
-        height:1024px;
-         position:absolute;
-      }
-      
-      .h1 {
-        margin-bottom: 10px;
-      }
-      #tooltip{
-		font-size:20px;
-    font-weight: bold;
-    color: black;
+    <link rel="stylesheet" type="text/css" href="styles/police.css">
 
-	
-
-}
-
-      /* Legend Position Style */
-      .legend {
-       
-        display: block;
-        margin-left: 30px;
-        margin-top: -745px;
-      }
-      .yaxis{
-        font-weight: bold;
-        font-size: 15px;
-      }
-
-      .axis text {
-        font: 10px sans-serif;
-      }
-
-      .axis line,
-      .axis path {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-      }
-      .filter{
-        position: absolute;
-        left: 5px;
-        top:250px;
-        width:200px;
-        height:100px;
-        font-size: large;
-        background-color: #add8e6;
-        font-weight: bold;
-
-
-      }
-      svg {
-  display: block;
-  margin-left: 700px;
-  margin-top: 50px;
-}
-
-div.tooltip{
-   
-    border-color: black;
-    border-radius: 10;
-    border-width: 3;
   
-}
-  </style>
   </head>
   <body>
     <div class="w3-top">
@@ -98,7 +31,7 @@ div.tooltip{
 
     <script>
       //Width and height of map
-      var width = 1300;
+      var width = 1000;
       var height = 800;
       var selection = "Black";
       var lowColor = "#FFD1D1";
@@ -126,7 +59,7 @@ div.tooltip{
       var projection = d3
         .geoAlbersUsa()
         .translate([width / 2, height / 2]) // translate to center of screen
-        .scale([1650]); // scale things down so see entire US
+        .scale([1200]); // scale things down so see entire US
 
       // Define path generator
       var path = d3
