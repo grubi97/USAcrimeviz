@@ -1,10 +1,21 @@
-   body {
-        font: 11px sans-serif;
-        background-color: #add8e6;
-        width:1920;
-        height:1024px;
-         position:absolute;
-      }
+body {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+  font-size: 11px;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
       
       .h1 {
         margin-bottom: 10px;
