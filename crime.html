@@ -302,7 +302,7 @@ var barchart = svg.selectAll("rect")
                     return i * 150;
                 })
         .attr("y",  d => { return y(d); })
-        .attr("height",  d => { return height - y(d); })
+        .attr("height",  d => { return height - y(d); })//https://bl.ocks.org/bytesbysophie/952a1003dd188410e9c6262b68a65f9a
 
 .attr("width", barWidth)
 .attr("fill", "blue")
@@ -310,7 +310,7 @@ var barchart = svg.selectAll("rect")
 
  }
  
- function pie(handgun,rifle,shotgun,knives){
+ function pie(handgun,rifle,shotgun,knives){//http://bl.ocks.org/nadinesk/99393098950665c471e035ac517c2224
    total=parseFloat(handgun)+parseFloat(rifle)+parseFloat(shotgun)+parseFloat(knives);
    handgunper=(parseFloat(handgun)/total)*100
    shotgunper=(parseFloat(shotgun)/total)*100
@@ -387,7 +387,7 @@ function type(d) {
 var legendRectSize = 13;
 var legendSpacing = 7;
 
-var legend = svg.selectAll('.legend') //the legend and placement
+var legend = svg.selectAll('.legend') 
 .data(color.domain())
 .enter()
 .append('g')
@@ -399,13 +399,13 @@ var legend = svg.selectAll('.legend') //the legend and placement
      var vert = i * height - offset;
      return 'translate(' + horz + ',' + vert + ')';
 });
-legend.append('circle') //keys
+legend.append('circle')
 .style('fill', color)
 .style('stroke', color)
 .attr('cx', 0)
 .attr('cy', 0)
 .attr('r', '.5rem');
-legend.append('text') //labels
+legend.append('text') 
 .attr('x', legendRectSize + legendSpacing)
 .attr('y', legendRectSize - legendSpacing)
 .text(function (d) {

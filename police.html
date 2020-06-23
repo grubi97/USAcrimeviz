@@ -57,19 +57,17 @@
         .style("visibility", "hidden")
         
 
-      // D3 Projection
       var projection = d3
         .geoAlbersUsa()
-        .translate([width / 2, height / 2]) // translate to center of screen
-        .scale([1200]); // scale things down so see entire US
+        .translate([width / 2, height / 2]) 
+        .scale([1200]); 
 
-      // Define path generator
       var path = d3
-        .geoPath() // path generator that will convert GeoJSON to SVG paths
-        .projection(projection); // tell path generator to use albersUsa projection
+        .geoPath() 
+        .projection(projection); 
 
       d3.select("body").insert("h2", ":first-child");
-      //Create SVG element and append map to the SVG
+   
       var svg = d3
         .select("body")
         .append("svg")
@@ -80,7 +78,6 @@
      
 
 
-      // Load in my states data!
 
       d3.csv("data/policekills.csv")
         .row(function (d) {
@@ -189,7 +186,6 @@
             }
           });
 
-          // add a legend
         });
       function select(data) {
         dataArray = [];
@@ -261,7 +257,7 @@
 legend()
       }
 
-  function legend(){
+  function legend(){//https://bl.ocks.org/wboykinm/dbbe50d1023f90d4e241712395c27fb3
     var w = 140,
           h = 700;
 
