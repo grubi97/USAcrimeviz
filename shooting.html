@@ -133,7 +133,11 @@
               .style("stroke", "#fff")
               .style("stroke-width", "1")
               .style("fill", function (d) {
-                return ramp(d.properties.wounded);
+                if(!isNaN(d.properties.wounded)){
+                  return ramp(d.properties.wounded);
+                }else{
+                  return "#B0C4DE"
+                }
               })
               .on("mouseover", function (d) {
                 d3.select(this).style("fill", "grey")
@@ -150,8 +154,12 @@
                 })
                 .on("mouseout", function () {
                   d3.select(this).style("fill", function (d) {
-              return ramp(d.properties.wounded);
-            })
+                if(!isNaN(d.properties.wounded)){
+                  return ramp(d.properties.wounded);
+                }else{
+                  return "#B0C4DE"
+                }
+              })
                   return tooltip.style("visibility", "hidden");
                 });
           });
@@ -195,10 +203,15 @@
                 .style("stroke", "#fff")
                 .style("stroke-width", "1")
                 .style("fill", function (d) {
+                if(!isNaN(d.properties.wounded)){
                   return ramp(d.properties.wounded);
-                })
+                }else{
+                  return "#B0C4DE"
+                }
+              })
                 .on("mouseover", function (d) {
                 d3.select(this).style("fill", "grey")
+                
 
                   return tooltip
                     .style("visibility", "visible")
@@ -211,9 +224,13 @@
                     .style("left", event.pageX + 10 + "px");
                 })
                 .on("mouseout", function () {
-                  d3.select(this).style("fill", function (d) {
-              return ramp(d.properties.wounded);
-            })
+                  d3.select(this) .style("fill", function (d) {
+                if(!isNaN(d.properties.wounded)){
+                  return ramp(d.properties.wounded);
+                }else{
+                  return "#B0C4DE"
+                }
+              })
                   return tooltip.style("visibility", "hidden");
                 });
             });

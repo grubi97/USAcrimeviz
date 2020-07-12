@@ -26,8 +26,8 @@ body {
       .chart {
        
         display: block;
-        margin-left: 35px;
-        margin-top: -745px;
+        margin-left: 5px;
+        margin-top: -800px;
       }
       .y{
         font-size: 20px;
@@ -43,15 +43,19 @@ body {
       }
       .yaxis{
         font-weight: bold;
-        font-size: 10px;
+        font-size: 17px;
       }
       .xaxis{
         font-weight: bold;
-        font-size: 12px;
+        font-size: 17px;
       }
 
       .axis text {
         font: 10px sans-serif;
+      }
+      .title{
+        margin-top: -1000px;
+
       }
      
       .axis line,

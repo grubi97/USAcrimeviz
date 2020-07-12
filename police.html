@@ -9,6 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
     <link rel="stylesheet" type="text/css" href="styles/police.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" >
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    
+
 
   
   </head>
@@ -26,12 +32,31 @@
 
       Total number of People killed by Police 2013-2019 by race in each State
       <br></br>
-      BLACK LIVES MATTER
+<br></br>
     </h1>
     <br/>
+    <ul class="list-inline"id="filter">
+      <li value="Black" class="list-inline-item"><a class="social-icon text-xs-center" >African American</a></li>
+      <li class="list-inline-item"><a class="social-icon text-xs-center"  >White People</a></li>
+      <li class="list-inline-item"><a class="social-icon text-xs-center" >Hispanic American</li>
+      <li class="list-inline-item"><a class="social-icon text-xs-center" >Asian American</li>
+      <li class="list-inline-item"><a class="social-icon text-xs-center" >Pacific American</li>
+      <li class="list-inline-item"><a class="social-icon text-xs-center" >Native American</li>
+      <li class="list-inline-item"><a class="social-icon text-xs-center" >Total</li>
+      <li class="list-inline-item"><a class="social-icon text-xs-center" >Unknown</li>
+
+    </ul>
     
 
     <script>
+
+function getEventTarget(e) {
+    e = e || window.event;
+    return e.target || e.srcElement; 
+}
+
+
+
       //Width and height of map
       var width = 1000;
       var height = 800;
@@ -97,23 +122,45 @@
 
         .get(function (error, data) {
           let newAr = [];
+          let totalarr=[];
+
+          data.forEach((element) => {
+            totalarr.push({ state: element.state, el: element.total });
+          });
+
+
+
+
+
+          dataArray = [];
+
+        for (var d = 0; d < totalarr.length; d++) {
+          if (totalarr[d].el != "") {
+            dataArray.push(parseFloat(totalarr[d].el));
+          }
+        }
+
+        minVal = Math.min.apply(Math, dataArray);
+        maxVal = Math.max.apply(Math, dataArray);
+      
 
           data.forEach((element) => {
             newAr.push({ state: element.state, el: element.black });
           });
 
           select(newAr);
-          d3.select("#filter").on("change", function () {
-            newAr = [];
+          
+            var ul = document.getElementById('filter');
+            ul.onclick = function(event) {
+              newAr = [];
             d3.selectAll("path").remove();
             d3.selectAll(".legend").remove();
-
-           
-
-            var section = document.getElementById("filter");
-            selection = section.options[section.selectedIndex].value;
-            switch (selection) {
-              case "Black":
+            var target = getEventTarget(event);
+            
+            
+  
+            switch (target.innerText) {
+              case "African American":
                 data.forEach((element) => {
                   newAr.push({ state: element.state, el: element.black });
                 });
@@ -122,7 +169,7 @@
                 select(newAr);
 
                 break;
-              case "Native":
+              case "Native American":
                 data.forEach((element) => {
                   newAr.push({ state: element.state, el: element.native });
                 });
@@ -131,7 +178,7 @@
 
 
                 break;
-              case "White":
+              case "White People":
                 data.forEach((element) => {
                   newAr.push({ state: element.state, el: element.white });
                 });
@@ -140,7 +187,7 @@
 
                 break;
 
-                case "Hispanic":
+                case "Hispanic American":
                 data.forEach((element) => {
                   newAr.push({ state: element.state, el: element.hispanic });
                 });
@@ -150,7 +197,7 @@
                 break; 
 
                 
-                case "Asian":
+                case "Asian American":
                 data.forEach((element) => {
                   newAr.push({ state: element.state, el: element.asian });
                 });
@@ -158,7 +205,7 @@
                 
 
                 break; 
-                case "Pacific":
+                case "Pacific American":
                 data.forEach((element) => {
                   newAr.push({ state: element.state, el: element.pacific });
                 });
@@ -184,21 +231,11 @@
 
                 break; 
             }
-          });
+            }
+          
 
         });
       function select(data) {
-        dataArray = [];
-
-        for (var d = 0; d < data.length; d++) {
-          if (data[d].el != "") {
-            dataArray.push(parseFloat(data[d].el));
-          }
-        }
-        console.log(dataArray);
-
-        minVal = Math.min.apply(Math, dataArray);
-        maxVal = Math.max.apply(Math, dataArray);
         var ramp = d3
           .scaleLinear()
           .domain([minVal, maxVal])
@@ -311,17 +348,7 @@ legend()
  
     </script>
 
-    <select id="filter" class="filter">
-      <option value="Black">African American</option>
-      <option value="Native">Native American</option>
-      <option value="White">White People</option>
-      <option value="Asian">Asian American</option>
-      <option value="Hispanic">Hispanics</option>
-      <option value="Pacific">Pacific Islanders</option>
-      <option value="Unknown">Unknown</option>
-      <option value="Total">Total</option>
 
-    </select>
   </body>
 </html>
            

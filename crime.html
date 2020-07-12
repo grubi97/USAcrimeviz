@@ -41,6 +41,7 @@
       var minVal;
       var minVal
       var dataArray=[];
+      var count=0;
    
       var tooltip = d3
         .select("body")
@@ -191,11 +192,25 @@
             return tooltip.style("visibility", "hidden");
           })
       .on("mousedown", function (d) {
+        
           d3.selectAll(".chart").remove();
           d3.selectAll(".pie").remove();
 
+          svg
+  .append("text")
+  .attr("class", "title")
+  .attr("x",100)
+  .attr("y",15)
+  .attr("font-family", "sans-serif")
+  .attr("font-size","17px")
+  .attr("font-weight","bold")
+  .attr("fill", "black")
+  .attr("text-anchor", "middle")
+  .text("Robbery Weapons");
+
           chart(d.properties.robberies,d.properties.robberyFirearms,d.properties.robberyKnives,d.properties.roberyOtherWeapons)
           pie(d.properties.murderHandguns,d.properties.murderRfiles,d.properties.murderShotgun,d.properties.murderKnives)
+          count++;
 
           
 
@@ -211,8 +226,11 @@
  function chart(total,firearm,knives,other){
 
 var data=[firearm,knives,other]
+console.log(data)
 
-var margin = {top: 20, bottom: 70, left:35, right: 10};
+
+
+var margin = {top: 10, bottom: 70, left:80, right: 10};
 var width = 320 - margin.left - margin.right;
 var height = 400 - margin.top - margin.bottom;
 var barPadding = 4;
@@ -239,14 +257,7 @@ var svg = d3.select("body")
 .append("g")
 .attr("transform", "translate(" + margin.left + "," + margin.top +")")
 
-svg.append("text")
-       .attr("transform", "translate(100,0)")
-       .attr("x", 35)
-       .attr("y", -5)
-       .attr("class", "title")
-       .attr("font-size", "15px")
-       .attr("font-weight","bold")
-       .text("Robbery weapons")
+
 
 var xAxis = d3.svg.axis()
 .scale(x)
@@ -291,23 +302,28 @@ var barchart = svg.selectAll("rect")
 })
 
 .attr("x", function(d, i) { return x(i); })
-
-.attr("y", y) .attr("height", function(d) { return height - y(d); })
-
-.attr("y",  d => { return height; })
-            .attr("height", 0)
-                .transition()
-                .duration(750)
-                .delay(function (d, i) {
-                    return i * 150;
-                })
-        .attr("y",  d => { return y(d); })
-        .attr("height",  d => { return height - y(d); })//https://bl.ocks.org/bytesbysophie/952a1003dd188410e9c6262b68a65f9a
-
+.attr("y", function(d){return y(0);}) 
+.attr("height", function(d) { return height - y(0); })
 .attr("width", barWidth)
 .attr("fill", "blue")
 .attr("class","chart")
 
+if(count==0){
+svg.selectAll("rect")
+    .transition()
+    .duration(800)
+    .attr("y", function(d) { return y(d); })
+    .attr("height", function(d) { return height - y(d); })
+    .delay(function(d,i){return(i*50)})
+
+}else{
+
+  svg.selectAll("rect")
+    .attr("y", function(d) { return y(d); })
+    .attr("height", function(d) { return height - y(d); })
+
+}
+console.log(count)
  }
  
  function pie(handgun,rifle,shotgun,knives){//http://bl.ocks.org/nadinesk/99393098950665c471e035ac517c2224
@@ -367,10 +383,13 @@ var svg = d3.select("body").append("svg")
     .enter().append("g")
       .attr("class", "arc");
 
-  g.append("path")
+if(count==0){g.append("path")
 	.style("fill", function(d) { return color(d.data.name); })
-    .transition().delay(function(d,i) {
-	return i * 500; }).duration(500)
+  .transition()
+  .delay(function(d,i) {
+
+	return i * 500; })
+  .duration(500)
 	.attrTween('d', function(d) {
 		var i = d3.interpolate(d.startAngle+0.1, d.endAngle);
 		return function(t) {
@@ -378,6 +397,23 @@ var svg = d3.select("body").append("svg")
 			return arc(d)
 			}
 		}); 
+  }else{
+    g.append("path")
+	.style("fill", function(d) { return color(d.data.name); })
+  .transition()
+  .delay(function(d,i) {
+
+	return i * 0; })
+  .duration(0)
+	.attrTween('d', function(d) {
+		var i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+		return function(t) {
+			d.endAngle = i(t); 
+			return arc(d)
+			}
+		}); 
+  }
+  
  
 	  
 function type(d) {
